@@ -6,13 +6,14 @@
 #' @param tmin
 #' @param tmax
 #' @param frecuency
-#' @param token
-#' @keywords 
+#' @param toke
+#' @param format
+#' @keywords
 #' @export 
 #' @examples
-#' download_data()
+#' save_data()
 
-download_data <- function(IdDevice,tmin,tmax,frecuency,token) 
+save_data <- function(IdDevice,tmin,tmax,frecuency,token,format) 
 {
     tmin <- as.numeric(as.POSIXct(tmin))
     tmax <- as.numeric(as.POSIXct(tmax))
@@ -40,5 +41,14 @@ download_data <- function(IdDevice,tmin,tmax,frecuency,token)
             tmin <- toString(t)
         }
     }
-    return(datt)
+    if (format == 'csv')
+    {
+        name <- paste(IdDevice,'_',as.Date(as.POSIXlt(tmin,origin = '1970-01-01')),'_',as.Date(as.POSIXlt(tmax,origin = '1970-01-01')),'.csv',sep='')
+        write.csv(datt,name)
+    }
+    else if (format == 'xlsx')
+    {
+        name <- paste(IdDevice,'_',as.Date(as.POSIXlt(tmin,origin = '1970-01-01')),'_',as.Date(as.POSIXlt(tmax,origin = '1970-01-01')),'.xlsx',sep='')
+        write.xlsx(datt,name)
+    }
 }
