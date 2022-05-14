@@ -28,7 +28,6 @@ download_data <- function(IdDevice,tmin,tmax,frecuency,token)
         #Manipular los datos
         dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
         dat <- rename(dat, c(value="ts"))
-        dat$ts <- NA
         dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
         t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
         datt <- rbind(datt,dat)
