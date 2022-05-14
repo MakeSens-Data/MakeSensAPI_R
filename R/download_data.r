@@ -30,7 +30,7 @@ download_data <- function(IdDevice,tmin,tmax,frecuency,token)
         #dat <- rename(dat, c(value="ts"))
         dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
         t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
-        datt <- rbind(datt,dat)
+        datt <- bind_rows(datt,dat)
 
         if (toString(t) == tmin)
         {
