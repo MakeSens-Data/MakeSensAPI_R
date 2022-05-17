@@ -26,8 +26,14 @@ download_data <- function(IdDevice,tmin,tmax,frecuency,token)
         r <- GET(url) # nolint
         datos <- content(r, type = 'application/json', simplifyDataFrame = TRUE)
         #Manipular los datos
-        dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
+        #dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
+        dat <- tryCatch(cbind(datos[2]/1000,datos[[1]]),error = function(e) return(TRUE))
         #dat <- rename(dat, c(value="ts"))
+        if (dat == TRUE)
+        {
+            print('No hay datos en este intervalo')
+            break
+        }
         dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
         t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
         datt <- bind_rows(datt,dat)
