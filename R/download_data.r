@@ -14,39 +14,38 @@
 
 download_data <- function(IdDevice,tmin,tmax,frecuency,token) 
 {
-    library(httr)
-    library(dplyr)
-    tmin <- as.numeric(as.POSIXct(tmin))
-    tmax <- as.numeric(as.POSIXct(tmax))
-    datt <- data.frame()
-    while (tmin < tmax)
+    download <- function(IdDevice,tmin,tmax,frecuency,token) 
     {
-        url =  paste('https://makesens.aws.thinger.io/v1/users/MakeSens/buckets/B',IdDevice,'/data?agg=1',frecuency,'&agg_type=mean&items=1000&max_ts=',tmax, '000&min_ts=',tmin,'000&sort=asc&authorization=',token,sep='')
-        #Descargar los datos
-        r <- GET(url) # nolint
-        datos <- content(r, type = 'application/json', simplifyDataFrame = TRUE)
-        #Manipular los datos
-        #dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
-        dat <- tryCatch(cbind(datos[2]/1000,datos[[1]]),error = function(e) return(TRUE))
-        #dat <- rename(dat, c(value="ts"))
-        if (dat == TRUE)
+        library(httr)
+        library(dplyr)
+        tmin <- as.numeric(as.POSIXct(tmin))
+        tmax <- as.numeric(as.POSIXct(tmax))
+        datt <- data.frame()
+        while (tmin < tmax)
         {
-            print('No hay datos en este intervalo')
-            break
-        }
-        dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
-        t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
-        datt <- bind_rows(datt,dat)
+            url =  paste('https://makesens.aws.thinger.io/v1/users/MakeSens/buckets/B',IdDevice,'/data?agg=1',frecuency,'&agg_type=mean&items=1000&max_ts=',tmax, '000&min_ts=',tmin,'000&sort=asc&authorization=',token,sep='')
+            #Descargar los datos
+            r <- GET(url) # nolint
+            datos <- content(r, type = 'application/json', simplifyDataFrame = TRUE)
+            #Manipular los datos
+            dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
+            #dat <- rename(dat, c(value="ts"))
+            dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
+            t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
+            datt <- bind_rows(datt,dat)
 
-        if (toString(t) == tmin)
-        {
-            tmin <- tmax
+            if (toString(t) == tmin)
+            {
+                tmin <- tmax
+            }
+
+            else
+            {
+                tmin <- toString(t)
+            }
         }
-        
-        else
-        {
-            tmin <- toString(t)
-        }
+        return(datt)
     }
-    return(datt)
+    
+    tryCatch(download(IdDevice,start,end,frecuency,token),error = function(e) message('No hay datos en este intervalo'))
 }
