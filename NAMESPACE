@@ -2,3 +2,7 @@
 
 export(download_data)
 export(save_data)
+export(gradient_pm10)
+export(gradient_pm2_5)
+export(heatmap_pm10)
+export(heatmap_pm2_5)
