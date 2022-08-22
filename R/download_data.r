@@ -47,5 +47,5 @@ download_data <- function(id_device,start_date,end_date,sample_rate,token)
         return(datt)
     }
     
-    tryCatch(download(id_device,start,end,sample_rate,token),error = function(e) message('No hay datos en este intervalo'))
+    tryCatch(download(id_device,start_date,end_date,sample_rate,token),error = function(e) message('No hay datos en este intervalo'))
 }
