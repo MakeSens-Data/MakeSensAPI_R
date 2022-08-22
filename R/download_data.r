@@ -12,7 +12,7 @@
 #' @examples
 #' download_data()
 
-download_data <- function(id_device,start_date,end_date,sample_rate,token) 
+download_data <- function(id_device,start_date,end_date,sample_ratecd ,token) 
 {
     download <- function(id_device,start_date,end_date,sample_rate,token) 
     {
