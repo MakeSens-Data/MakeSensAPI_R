@@ -44,5 +44,5 @@ heatmap_pm10 <- function(data)
     colors = c(seq(0,54,length=100),seq(55,154,length=100),seq(155,254,length=100),seq(255,354,length=100),seq(355,424,length=100),seq(425,604,length=100))
     my_palette <- colorRampPalette(c('green', 'yellow', 'Orange', 'red', 'Purple','Brown'))(n = 599)
     heatmap.2(heat_map_matrix, margins=c(7,4), dendrogram='none',Colv = FALSE, Rowv = FALSE, col = my_palette, breaks = colors, xlab ='Estampa temporal',ylab ='Horas',
-             key.title = '', key.xlab = 'PM2.5' )
+             key.title = '', key.xlab = 'PM10' )
 }
