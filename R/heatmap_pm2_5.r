@@ -28,7 +28,7 @@ heatmap_pm2_5 <- function(data)
             }
          else
              {
-             vec <- c(vec,0)
+             vec <- c(vec,NA)
              }
          }
     heat_map[[as.character(dias[i])]] <- vec
