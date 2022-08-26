@@ -8,7 +8,7 @@
 #' @examples
 #' gradient_pm2_5()
 
-gradient_pm2_5 <- function(data)
+gradient_pm2_5 <- function(data,sample_rate)
     {
 
     library("scales")
@@ -21,7 +21,7 @@ gradient_pm2_5 <- function(data)
     data <- data %>% distinct(data$ts, .keep_all = TRUE)
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
 
-    range <- seq(data$ts[1],data$ts[length(data$ts)],"h")
+    range <- seq(data$ts[1],data$ts[length(data$ts)],sample_rate)
 
     vec <- c()
     for (i in range){
