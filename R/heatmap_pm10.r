@@ -17,7 +17,7 @@ heatmap_pm10 <- function(data)
     library(latex2exp)
 
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
-    dias = seq(as.Date(data[['ts']][1]), as.Date(data[['ts']][length(data$ts]), by = "day")
+    dias = seq(as.Date(data[['ts']][1]), as.Date(data[['ts']][length(data$ts)]), by = "day")
     dias <- dias[1:length(dias)-1]
     heat_map <- data.frame(row.names =  0:23)
     
