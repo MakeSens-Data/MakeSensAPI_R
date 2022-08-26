@@ -20,6 +20,9 @@ gradient_pm10 <- function(data,sample_rate)
     data <- data %>% distinct(data$ts, .keep_all = TRUE)
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
 
+    if (sample_rate == 'm'){
+    sample_rate = 'mins'
+    }
     range <- seq(data$ts[1],data$ts[length(data$ts)],sample_rate)
 
     vec <- c()
