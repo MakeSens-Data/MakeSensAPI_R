@@ -17,6 +17,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields=NU
 {
     library(httr)
     library(dplyr)
+    library(xlsx)
     start_date <- as.numeric(as.POSIXct(start_date))
     end_date <- as.numeric(as.POSIXct(end_date))
     datt <- data.frame()
@@ -54,7 +55,6 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields=NU
     if (format == 'csv')
     {
         name <- paste(id_device,'_',datt$ts[1],'_',as.Date(as.POSIXlt(end_date,origin = '1970-01-01')),'.csv',sep='')
-        #print(start_date)
         write.csv(datt,name)
     }
     else if (format == 'xlsx')
