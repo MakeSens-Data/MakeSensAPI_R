@@ -36,8 +36,9 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields=NU
         #Manipular los datos
         dat <- cbind(datos[1]/1000,datos[[2]]) #El primer elemento es el tiempo y el segundo las demas variables
         dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
-        t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
+        t <-  datos[1][[1]][length(datos[1][[1]])] / 1000
         datt <- bind_rows(datt,dat)
+        
 
         if (toString(t) == start_date)
         {
@@ -49,14 +50,16 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields=NU
             start_date <- toString(t)
         }
     }
+    
     if (format == 'csv')
     {
-        name <- paste(id_device,'_',as.Date(as.POSIXlt(start_date,origin = '1970-01-01')),'_',as.Date(as.POSIXlt(end_date,origin = '1970-01-01')),'.csv',sep='')
+        name <- paste(id_device,'_',datt$ts[1],'_',as.Date(as.POSIXlt(end_date,origin = '1970-01-01')),'.csv',sep='')
+        #print(start_date)
         write.csv(datt,name)
     }
     else if (format == 'xlsx')
     {
-        name <- paste(id_device,'_',as.Date(as.POSIXlt(start_date,origin = '1970-01-01')),'_',as.Date(as.POSIXlt(end_date,origin = '1970-01-01')),'.xlsx',sep='')
+        name <- paste(id_device,'_',datt$ts[1],'_',as.Date(as.POSIXlt(end_date,origin = '1970-01-01')),'.xlsx',sep='')
         write.xlsx(datt,name)
     }
 }

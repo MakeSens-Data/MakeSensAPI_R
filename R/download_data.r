@@ -39,7 +39,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             dat <- cbind(datos[1]/1000,datos[[2]]) #El primer elemento es el tiempo y el segundo las demas variables
             #dat <- rename(dat, c(value="ts"))
             dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
-            t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
+            t <-  datos[1][[1]][length(datos[1][[1]])] / 1000
             datt <- bind_rows(datt,dat)
             
 
