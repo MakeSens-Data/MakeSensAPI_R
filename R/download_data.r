@@ -12,9 +12,9 @@
 #' @examples
 #' download_data()
 
-download_data <- function(id_device,start_date,end_date,sample_rate) 
+download_data <- function(id_device,start_date,end_date,sample_rate,fields = NULL) 
 {
-    download <- function(id_device,start_date,end_date,sample_rate) 
+    download <- function(id_device,start_date,end_date,sample_rate,fields) 
     {   
         library(httr)
         library(dplyr)
@@ -56,5 +56,5 @@ download_data <- function(id_device,start_date,end_date,sample_rate)
         return(datt)
     }
     
-    tryCatch(download(id_device,start_date,end_date,sample_rate),error = function(e) message('No hay datos en este intervalo'))
+    tryCatch(download(id_device,start_date,end_date,sample_rate,fields),error = function(e) message('No hay datos en este intervalo'))
 }
