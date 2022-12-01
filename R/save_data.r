@@ -13,7 +13,7 @@
 #' @examples
 #' save_data()
 
-save_data <- function(id_device,start_date,end_date,sample_rate,token,format) 
+save_data <- function(id_device,start_date,end_date,sample_rate,format,fields=NULL) 
 {
     library(httr)
     library(dplyr)
@@ -22,12 +22,19 @@ save_data <- function(id_device,start_date,end_date,sample_rate,token,format)
     datt <- data.frame()
     while (start_date < end_date)
     {
-        url =  paste('https://makesens.aws.thinger.io/v1/users/MakeSens/buckets/B',id_device,'/data?agg=1',sample_rate,'&agg_type=mean&items=1000&max_ts=',end_date, '000&min_ts=',start_date,'000&sort=asc&authorization=',token,sep='')
+        if (is.null(fields))
+        {
+        url = paste('https://api.makesens.co/ambiental/metricas/',id_device,'/data?agg=1',sample_rate,'&agg_type=mean&items=1000&max_ts=',end_date,'000&min_ts=',start_date,'000',sep='')
+        }
+        else
+        {
+        url = paste('https://api.makesens.co/ambiental/metricas/',id_device,'/data?agg=1',sample_rate,'&agg_type=mean&fields=',fields,'&items=1000&max_ts=',end_date,'000&min_ts=',start_date,'000',sep='')                  
+        }
         #Descargar los datos
         r <- GET(url)
         datos <- content(r, type = 'application/json', simplifyDataFrame = TRUE)
         #Manipular los datos
-        dat <- cbind(datos[2]/1000,datos[[1]]) #El primer elemento es el tiempo y el segundo las demas variables
+        dat <- cbind(datos[1]/1000,datos[[2]]) #El primer elemento es el tiempo y el segundo las demas variables
         dat$ts <- as.POSIXlt(dat$ts,origin="1970-01-01")
         t <-  datos[2][[1]][length(datos[2][[1]])] / 1000
         datt <- bind_rows(datt,dat)
