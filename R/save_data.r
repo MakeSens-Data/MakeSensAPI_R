@@ -22,9 +22,13 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
         # Diccionario de correcciones específicas
         corrections <- list(
             temperatura2 = "temperatura_2",
+            temperatura_2 = "temperatura2",
             humedad2 = "humedad_2",
-            TEMPERATUA2 = "TEMPERATURA_2",
-            HUMEDAD2 = "HUMEDAD_2"
+            humedad_2 = "humedad2",
+            TEMPERATURA2 = "TEMPERATURA_2",
+            TEMPERATURA_2 = "TEMPERATURA2",
+            HUMEDAD2 = "HUMEDAD_2",
+            HUMEDAD_2 = "HUMEDAD2"
         )
         
         new_measurements <- c()
