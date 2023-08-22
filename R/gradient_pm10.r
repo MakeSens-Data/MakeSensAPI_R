@@ -23,17 +23,16 @@ gradient_pm10 <- function(data,sample_rate)
     if (sample_rate == 'm'){
     sample_rate = 'mins'
     }
-    range <- seq(data$ts[1],data$ts[length(data$ts)],sample_rate)
+    range <- seq(from = min(data$ts), to = max(data$ts), by = 'hour')
 
-    vec <- c()
-    for (i in range){
-        if (i %in% data$ts){
-            vec <- c(vec,data$pm10_1[which(data$ts == i)])
-        }
-        else{
-            vec <- c(vec,NA)
-        }
+    vec <- sapply(range, function(i) {
+    matching_row <- data[data$ts == i,]
+    if(nrow(matching_row) > 0) {
+        return(matching_row$pm10_1)
+    } else {
+        return(NA)
     }
+    })
     dat <- data.frame('ts' = range, 'PM10' = vec)
 
     output <- ggplot(dat, aes(x = ts, y = PM10, color = PM10)) +
