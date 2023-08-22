@@ -54,7 +54,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
         end_date <- as.numeric(as.POSIXct(end_date)) 
         datt <- data.frame()
         while (start_date < end_date)
-        {   
+        {
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
@@ -74,14 +74,15 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             data_list <- fromJSON(cleaned_response)
             df <- data_list$data %>% as.data.frame()
             df$ts <- as.POSIXlt(df$ts,origin="1970-01-01")
-
             # Concatenar las datas
             if (ncol(datt) == 0) 
             {
                 datt <- df
+                
             }
             else
             {
+                
                 missing_cols <- setdiff(names(datt), names(df))
                 for(col in missing_cols) {
                     df[[col]] <- NA # Fill new columns with NAs
@@ -89,7 +90,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
                 datt <- rbind(datt, df)
             }
             
-            t <- data_list$date_range$end
+            t <-  as.numeric(data_list$date_range$end) / 1000
 
             if (toString(t) == start_date)
             {
@@ -102,6 +103,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             }
             
         }
+    
         # Eliminar los repetidos
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
@@ -110,3 +112,8 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
     
     download(id_device,start_date,end_date,sample_rate,fields)
 }
+
+if (interactive()) {
+    data <- download_data('mE2_00002', '2023-08-10 00:00:00', '2023-08-22 00:00:00', '1H')
+    print(data)
+}   
