@@ -17,7 +17,7 @@
 save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = NULL) 
 {
     library(xlsx)
-    # Función para manejar las variables
+  # Función para manejar las variables
     convert_measurements <- function(measurements, mode="lower") {
         # Diccionario de correcciones específicas
         corrections <- list(
@@ -57,7 +57,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
         end_date <- as.numeric(as.POSIXct(end_date)) 
         datt <- data.frame()
         while (start_date < end_date)
-        {   
+        {
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
@@ -76,15 +76,17 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
             cleaned_response <- gsub("NaN", "null", response_text)
             data_list <- fromJSON(cleaned_response)
             df <- data_list$data %>% as.data.frame()
+            df$ts <- df$ts / 1000 # Convertir milisegundos a segundos
             df$ts <- as.POSIXlt(df$ts,origin="1970-01-01")
-
             # Concatenar las datas
             if (ncol(datt) == 0) 
             {
                 datt <- df
+                
             }
             else
             {
+                
                 missing_cols <- setdiff(names(datt), names(df))
                 for(col in missing_cols) {
                     df[[col]] <- NA # Fill new columns with NAs
@@ -92,7 +94,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
                 datt <- rbind(datt, df)
             }
             
-            t <- data_list$date_range$end
+            t <-  as.numeric(data_list$date_range$end) / 1000
 
             if (toString(t) == start_date)
             {
@@ -105,13 +107,14 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
             }
             
         }
+    
         # Eliminar los repetidos
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
         return(datt)
     }
     
-    datt <- download(id_device,start_date,end_date,sample_rate,fields)
+    download(id_device,start_date,end_date,sample_rate,fields)
     if (format == 'csv')
     {
         name <- paste(id_device, 
