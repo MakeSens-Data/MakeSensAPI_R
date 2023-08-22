@@ -73,6 +73,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             cleaned_response <- gsub("NaN", "null", response_text)
             data_list <- fromJSON(cleaned_response)
             df <- data_list$data %>% as.data.frame()
+            df$ts <- df$ts / 1000 # Convertir milisegundos a segundos
             df$ts <- as.POSIXlt(df$ts,origin="1970-01-01")
             # Concatenar las datas
             if (ncol(datt) == 0) 
@@ -112,8 +113,3 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
     
     download(id_device,start_date,end_date,sample_rate,fields)
 }
-
-if (interactive()) {
-    data <- download_data('mE2_00002', '2023-08-10 00:00:00', '2023-08-22 00:00:00', '1H')
-    print(data)
-}   
