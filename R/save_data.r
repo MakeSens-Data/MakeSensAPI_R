@@ -94,7 +94,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
                 datt <- rbind(datt, df)
             }
             
-            t <-  as.numeric(data_list$date_range$end) / 1000
+            t <-  as.numeric(data_list$date_range$end) 
 
             if (toString(t) == start_date)
             {
