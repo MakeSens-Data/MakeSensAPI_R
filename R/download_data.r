@@ -50,23 +50,22 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
         library(dplyr)
         library(jsonlite)
 
-        start_date <- as.numeric(as.POSIXct(start_date)) * 1000
-        end_date <- as.numeric(as.POSIXct(end_date)) * 1000
+        start_date <- as.numeric(as.POSIXct(start_date))
+        end_date <- as.numeric(as.POSIXct(end_date)) 
         datt <- data.frame()
         while (start_date < end_date)
         {
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'&max_ts=',end_date,'&agg=',sample_rate,sep='') 
-            print(url)
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
             }
             else
             {
                 fields_list <- unlist(strsplit(fields, ","))
                 fields_list <- convert_measurements(fields_list, mode="upper")
                 fields <- paste(fields_list, collapse=",")
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'&max_ts=',end_date,'&agg=',sample_rate,'&fields=',fields,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
             }
             # Hacer la petición
             r <- GET(url) # nolint
@@ -74,7 +73,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             cleaned_response <- gsub("NaN", "null", response_text)
             data_list <- fromJSON(cleaned_response)
             df <- data_list$data %>% as.data.frame()
-            df$ts <- df$ts  
+            df$ts <- df$ts / 1000 # Convertir milisegundos a segundos
             df$ts <- as.POSIXlt(df$ts,origin="1970-01-01")
             # Concatenar las datas
             if (ncol(datt) == 0) 
@@ -92,7 +91,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
                 datt <- rbind(datt, df)
             }
             
-            t <-  as.numeric(data_list$date_range$end) 
+            t <-  as.numeric(data_list$date_range$end) / 1000
 
             if (toString(t) == start_date)
             {
