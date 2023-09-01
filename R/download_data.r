@@ -59,6 +59,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             if (is.null(fields))
             {
                 url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'&max_ts=',end_date,'&agg=',sample_rate,sep='') 
+            print(url)
             }
             else
             {
