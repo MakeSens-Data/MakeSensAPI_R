@@ -126,5 +126,5 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         return(datt)
     }
     
-    download(id_device,start_date,end_date,sample_rate,fields)
+    download(id_device,start_date,end_date,sample_rate,fields,logs)
 }
