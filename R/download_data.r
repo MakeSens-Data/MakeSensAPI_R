@@ -56,7 +56,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         while (start_date < end_date)
         {
             # Validar si se puden logs
-            if (logs){
+            if (logs==TRUE){
                 if (is.null(fields))
             {
                 url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
