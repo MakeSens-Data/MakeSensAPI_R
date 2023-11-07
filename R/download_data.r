@@ -56,8 +56,6 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         while (start_date < end_date)
         {
             # Validar si se puden logs
-            print('.......')
-            print(logs)
             if (logs){
                 if (is.null(fields))
             {
@@ -131,15 +129,3 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
     download(id_device,start_date,end_date,sample_rate,logs,fields)
 }
 
-
-if (identical(environment(), .GlobalEnv)) {
-    # Coloca aquí las llamadas de prueba para tu función
-    print("Este script está siendo ejecutado directamente, no está siendo fuenteado.")
-    result <- download_data(id_device = "your_device_id",
-                            start_date = "2023-01-01",
-                            end_date = "2023-01-02",
-                            sample_rate = "your_sample_rate",
-                            logs = TRUE,
-                            fields = "temperature,humidity")
-    print(result)
-}

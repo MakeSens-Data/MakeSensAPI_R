@@ -47,7 +47,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
         return(new_measurements)
     }
 
-    download <-  function(id_device,start_date,end_date,sample_rate,fields) 
+download <-  function(id_device,start_date,end_date,sample_rate,logs,fields) 
     {
         library(httr)
         library(dplyr)
@@ -58,6 +58,21 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
         datt <- data.frame()
         while (start_date < end_date)
         {
+            # Validar si se puden logs
+            if (logs){
+                if (is.null(fields))
+            {
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
+            }
+             else
+            {
+                fields_list <- unlist(strsplit(fields, ","))
+                fields_list <- convert_measurements(fields_list, mode="upper")
+                fields <- paste(fields_list, collapse=",")
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
+            }
+            }
+            else{
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
@@ -69,7 +84,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
                 fields_list <- convert_measurements(fields_list, mode="upper")
                 fields <- paste(fields_list, collapse=",")
                 url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
-            }
+            }}
             # Hacer la petición
             r <- GET(url) # nolint
             response_text <- content(r, "text" ,encoding = "UTF-8")
@@ -114,7 +129,7 @@ save_data <- function(id_device,start_date,end_date,sample_rate,format,fields = 
         return(datt)
     }
     
-    download(id_device,start_date,end_date,sample_rate,fields)
+    download(id_device,start_date,end_date,sample_rate,logs,fields)
     if (format == 'csv')
     {
         name <- paste(id_device, 
