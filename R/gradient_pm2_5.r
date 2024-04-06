@@ -27,15 +27,14 @@ gradient_pm2_5 <- function(data,sample_rate)
 
     range <- seq(data$ts[1],data$ts[length(data$ts)],sample_rate)
 
-    vec <- c()
-    for (i in range){
-        if (i %in% data$ts){
-            vec <- c(vec,data$pm25_1[which(data$ts == i)])
-        }
-        else{
-            vec <- c(vec,NA)
-        }
+    vec <- sapply(range, function(i) {
+    matching_row <- data[data$ts == i,]
+    if(nrow(matching_row) > 0) {
+        return(matching_row$pm10_1)
+    } else {
+        return(NA)
     }
+    })
     dat <- data.frame('ts' = range, 'PM25' = vec)    
     output <- ggplot(dat, aes(x = ts, y = PM25, color = PM25 )) +
           geom_line(size = 1)  +

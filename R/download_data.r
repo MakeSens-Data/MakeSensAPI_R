@@ -12,7 +12,7 @@
 #' @examples
 #' download_data()
 
-download_data <- function(id_device,start_date,end_date,sample_rate,fields = NULL) 
+download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,fields = NULL) 
 {
     # Función para manejar las variables
     convert_measurements <- function(measurements, mode="lower") {
@@ -44,7 +44,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
         return(new_measurements)
     }
 
-    download <-  function(id_device,start_date,end_date,sample_rate,fields) 
+    download <-  function(id_device,start_date,end_date,sample_rate,logs,fields) 
     {
         library(httr)
         library(dplyr)
@@ -54,34 +54,51 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
         end_date <- as.numeric(as.POSIXct(end_date)) 
         datt <- data.frame()
         while (start_date < end_date)
-        {   
+        {
+            # Validar si se puden logs
+            if (logs){
+                if (is.null(fields))
+            {
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
+            }
+             else
+            {
+                fields_list <- unlist(strsplit(fields, ","))
+                fields_list <- convert_measurements(fields_list, mode="upper")
+                fields <- paste(fields_list, collapse=",")
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
+            }
+            }
+            else{
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'&max_ts=',end_date,'&agg=',sample_rate,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
             }
             else
             {
                 fields_list <- unlist(strsplit(fields, ","))
                 fields_list <- convert_measurements(fields_list, mode="upper")
                 fields <- paste(fields_list, collapse=",")
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'&max_ts=',end_date,'&agg=',sample_rate,'&fields=',fields,sep='') 
-            }
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
+            }}
             # Hacer la petición
             r <- GET(url) # nolint
             response_text <- content(r, "text" ,encoding = "UTF-8")
             cleaned_response <- gsub("NaN", "null", response_text)
             data_list <- fromJSON(cleaned_response)
             df <- data_list$data %>% as.data.frame()
+            df$ts <- df$ts / 1000 # Convertir milisegundos a segundos
             df$ts <- as.POSIXlt(df$ts,origin="1970-01-01")
-
             # Concatenar las datas
             if (ncol(datt) == 0) 
             {
                 datt <- df
+                
             }
             else
             {
+                
                 missing_cols <- setdiff(names(datt), names(df))
                 for(col in missing_cols) {
                     df[[col]] <- NA # Fill new columns with NAs
@@ -89,7 +106,7 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
                 datt <- rbind(datt, df)
             }
             
-            t <- data_list$date_range$end
+            t <-  as.numeric(data_list$date_range$end) / 1000
 
             if (toString(t) == start_date)
             {
@@ -102,11 +119,13 @@ download_data <- function(id_device,start_date,end_date,sample_rate,fields = NUL
             }
             
         }
+    
         # Eliminar los repetidos
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
         return(datt)
     }
     
-    download(id_device,start_date,end_date,sample_rate,fields)
+    download(id_device,start_date,end_date,sample_rate,logs,fields)
 }
+
