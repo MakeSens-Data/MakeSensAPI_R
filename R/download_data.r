@@ -1,4 +1,4 @@
-download_data <- function(id_device, start_date, end_date, sample_rate, logs = FALSE, data_type = 'RAW', file_format= NULL, fields = NULL)  # nolint
+download_data <- function(id_device, start_date, end_date, sample_rate, logs = FALSE, data_type = 'RAW', file_format= NULL, fields = NULL) 
 {
     library(xlsx)
   # Función para manejar las variables
@@ -110,16 +110,16 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
         # Cambio específico de nombres de columnas
-        colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
-        colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
-        colnames(datt) <- gsub("pm25_1_ae", "pm25_1_AE", colnames(datt))
-        colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
-        colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
-        colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
+    colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
+    colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
+    colnames(datt) <- gsub("pm25_1_ae", "pm25_1_AE", colnames(datt))
+    colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
+    colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
+    colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
         return(datt)
     }
     
-    datt <- download(id_device,start_date,end_date,sample_rate,logs,data_type,fields)
+    datt <- download(id_device,start_date,end_date,sample_rate,data_type,logs,fields)
 
     if (is.null(fields)){
         return(datt)
@@ -141,3 +141,5 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
         write.xlsx(datt,name)
     }
 }
+
+
