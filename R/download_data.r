@@ -1,6 +1,5 @@
 download_data <- function(id_device, start_date, end_date, sample_rate, logs = FALSE, data_type = 'RAW', file_format= NULL, fields = NULL) 
 {
-    library(xlsx)
   # Función para manejar las variables
     convert_measurements <- function(measurements, mode="lower") {
         # Diccionario de correcciones específicas
@@ -134,11 +133,12 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
     }
     else if (file_format == 'xlsx')
     {
+        library(xlsx)
         name <- paste(id_device, 
               format(as.POSIXct(datt$ts[1]), "%Y-%m-%d_%H-%M-%S"), 
               format(as.Date(as.POSIXlt(end_date, origin = '1970-01-01')), "%Y-%m-%d"), 
               '.xlsx', sep='_')
-        xlsx::write.xlsx(datt,name)
+        write.xlsx(datt,name)
     }
 }
 
