@@ -110,12 +110,12 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
         # Cambio específico de nombres de columnas
-    colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
-    colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
-    colnames(datt) <- gsub("pm25_1_ae", "pm25_1_AE", colnames(datt))
-    colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
-    colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
-    colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
+        colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
+        colnames(datt) <- gsub("pm25_1_ae", "pm25_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
+        colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
         return(datt)
     }
     
@@ -138,7 +138,7 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
               format(as.POSIXct(datt$ts[1]), "%Y-%m-%d_%H-%M-%S"), 
               format(as.Date(as.POSIXlt(end_date, origin = '1970-01-01')), "%Y-%m-%d"), 
               '.xlsx', sep='_')
-        write.xlsx(datt,name)
+        xlsx::write.xlsx(datt,name)
     }
 }
 
