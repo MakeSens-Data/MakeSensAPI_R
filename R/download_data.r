@@ -68,6 +68,7 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
                 url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }}
             # Hacer la petición
+            print(url)
             r <- GET(url) # nolint
             response_text <- content(r, "text" ,encoding = "UTF-8")
             cleaned_response <- gsub("NaN", "null", response_text)
@@ -120,7 +121,7 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
     
     datt <- download(id_device,start_date,end_date,sample_rate,logs,data_type,fields)
 
-    if (is.null(fields)){
+    if (is.null(file_format)){
         return(datt)
     }
     else if (file_format == 'csv')
@@ -141,5 +142,3 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
         write.xlsx(datt,name)
     }
 }
-
-
