@@ -68,7 +68,6 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
                 url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }}
             # Hacer la petición
-            print(url)
             r <- GET(url) # nolint
             response_text <- content(r, "text" ,encoding = "UTF-8")
             cleaned_response <- gsub("NaN", "null", response_text)
