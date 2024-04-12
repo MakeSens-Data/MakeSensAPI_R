@@ -31,6 +31,8 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
     }
 
     download <-  function(id_device,start_date,end_date,sample_rate,logs,data_type,fields){
+        suppressPackageStartupMessages(library(dplyr))
+        suppressPackageStartupMessages(library(jsonlite))
         library(httr)
         library(dplyr)
         library(jsonlite)
