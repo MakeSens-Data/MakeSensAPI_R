@@ -1,20 +1,6 @@
-#' An example for writing a function in R using Roxygen (e.g. a variant of Doxygen for
-#' R) 
-#' Well, this function is for writing stuff, I suppose that I need to write here the
-#' pourpose of the function.
-#' @param id_device
-#' @param start_date
-#' @param end_date
-#' @param sample_rate
-#' @param token
-#' @keywords 
-#' @export 
-#' @examples
-#' download_data()
-
-download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,fields = NULL) 
+download_data <- function(id_device, start_date, end_date, sample_rate, logs = FALSE, data_type = 'RAW', file_format= NULL, fields = NULL) 
 {
-    # Función para manejar las variables
+  # Función para manejar las variables
     convert_measurements <- function(measurements, mode="lower") {
         # Diccionario de correcciones específicas
         corrections <- list(
@@ -44,8 +30,9 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         return(new_measurements)
     }
 
-    download <-  function(id_device,start_date,end_date,sample_rate,logs,fields) 
-    {
+    download <-  function(id_device,start_date,end_date,sample_rate,logs,data_type,fields){
+        suppressPackageStartupMessages(library(dplyr))
+        suppressPackageStartupMessages(library(jsonlite))
         library(httr)
         library(dplyr)
         library(jsonlite)
@@ -55,32 +42,32 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         datt <- data.frame()
         while (start_date < end_date)
         {
-            # Validar si se puden logs
+            # Validar si se piden logs
             if (logs){
                 if (is.null(fields))
             {
-                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,sep='') 
             }
              else
             {
                 fields_list <- unlist(strsplit(fields, ","))
                 fields_list <- convert_measurements(fields_list, mode="upper")
                 fields <- paste(fields_list, collapse=",")
-                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }
             }
             else{
             # Validar si se piden variables especificas
             if (is.null(fields))
             {
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,sep='','&data_type=',data_type) 
             }
             else
             {
                 fields_list <- unlist(strsplit(fields, ","))
                 fields_list <- convert_measurements(fields_list, mode="upper")
                 fields <- paste(fields_list, collapse=",")
-                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&fields=',fields,sep='') 
+                url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }}
             # Hacer la petición
             r <- GET(url) # nolint
@@ -123,9 +110,36 @@ download_data <- function(id_device,start_date,end_date,sample_rate,logs=FALSE,f
         # Eliminar los repetidos
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
         colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
+        # Cambio específico de nombres de columnas
+        colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
+        colnames(datt) <- gsub("pm25_1_ae", "pm25_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
+        colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
+        colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
         return(datt)
     }
     
-    download(id_device,start_date,end_date,sample_rate,logs,fields)
-}
+    datt <- download(id_device,start_date,end_date,sample_rate,logs,data_type,fields)
 
+    if (is.null(file_format)){
+        return(datt)
+    }
+    else if (file_format == 'csv')
+    {
+        name <- paste(id_device, 
+              format(as.POSIXct(datt$ts[1]), "%Y-%m-%d_%H-%M-%S"), 
+              format(as.Date(as.POSIXlt(end_date, origin = '1970-01-01')), "%Y-%m-%d"), 
+              '.csv', sep='_')
+        write.csv(datt,name)
+    }
+    else if (file_format == 'xlsx')
+    {
+        library(xlsx)
+        name <- paste(id_device, 
+              format(as.POSIXct(datt$ts[1]), "%Y-%m-%d_%H-%M-%S"), 
+              format(as.Date(as.POSIXlt(end_date, origin = '1970-01-01')), "%Y-%m-%d"), 
+              '.xlsx', sep='_')
+        write.xlsx(datt,name)
+    }
+}

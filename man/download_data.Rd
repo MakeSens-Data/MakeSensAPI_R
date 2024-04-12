@@ -7,8 +7,7 @@ R)
 Well, this function is for writing stuff, I suppose that I need to write here the
 pourpose of the function.}
 \usage{
-download_data(IdDevice, tmin, tmax, frecuency, token)
-}
+(id_device, start_date, end_date, sample_rate, logs = FALSE, data_type = 'RAW', file_format= NULL, fields = NULL) }
 \arguments{
 \item{something}{Something to put}
 }
@@ -19,7 +18,6 @@ Well, this function is for writing stuff, I suppose that I need to write here th
 pourpose of the function.
 }
 \examples{
-download_data()
 }
 \keyword{Tests,}
 \keyword{examples,}
