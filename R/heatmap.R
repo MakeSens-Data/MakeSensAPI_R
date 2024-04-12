@@ -5,6 +5,8 @@ heatmap <- function(data, variable)
     library(lubridate)
     library("gplots")
     library(latex2exp)
+    library(scales)
+
     
     names(data)[2] <- 'variable'
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
