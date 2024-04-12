@@ -17,7 +17,7 @@
 #' # Assuming 'data' is a data frame with the correct structure:
 #' heatmap_pm10(data)
 
-heatmap_pm10 <- function(data)
+heatmap <- function(data)
     {
     library("scales")
     library(ggplot2)
@@ -25,7 +25,6 @@ heatmap_pm10 <- function(data)
     library(lubridate)
     library(latex2exp)
     library(tidyr)  
-
 
     names(data)[2] <- 'variable'
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
