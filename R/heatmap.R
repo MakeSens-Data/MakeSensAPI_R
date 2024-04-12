@@ -56,6 +56,7 @@ heatmap <- function(data, variable)
     rescaled_breaks <- rescale(breaks, to = c(0, 1))
 
     # Crear el mapa de calor con ggplot2
+    options(repr.plot.width=8, repr.plot.height=6)
     ggp <- ggplot(data_melted, aes(x = Days, y = Hours, fill = value)) +
       geom_tile() + 
       scale_fill_gradientn(colours = colors, limits = c(0, 425), values = rescaled_breaks, oob = squish, na.value = "white") +
