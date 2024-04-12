@@ -1,23 +1,4 @@
-#' Heatmap for PM10 Visualization
-#'
-#' This function takes a dataset with timestamp and PM10 measurements and creates a heatmap. 
-#' The purpose of this function is to provide a visual representation of PM10 levels across different times and dates.
-#' It assumes that the first column is a timestamp and the second column is the PM10 measurement.
-#'
-#' @param data A data frame where the first column is a timestamp ('ts') and the second column is the PM10 variable to be analyzed.
-#' @importFrom scales Rescale, pal_name
-#' @importFrom ggplot2 ggplot, geom_tile, aes, theme, labs
-#' @importFrom gplots heatmap.2
-#' @importFrom lubridate as_date, hour
-#' @importFrom tidyr complete, pivot_wider
-#' @importFrom latex2exp TeX
-#' @keywords heatmap, PM10
-#' @export 
-#' @examples
-#' # Assuming 'data' is a data frame with the correct structure:
-#' heatmap_pm10(data)
-
-heatmap <- function(data)
+heatmap_ <- function(data)
     {
     library("scales")
     library(ggplot2)
