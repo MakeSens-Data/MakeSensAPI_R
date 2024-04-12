@@ -8,7 +8,7 @@
 #' @examples
 #' gradient_pm2_5()
 
-gradient <- function(data,sample_rate)
+gradient <- function(data,variable)
     {
 
     suppressPackageStartupMessages(library(lubridate))
