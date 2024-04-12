@@ -4,6 +4,7 @@ heatmap <- function(data, variable)
     library('devtools')
     library(lubridate)
     library("gplots")
+    library(ggplot2)
     library(latex2exp)
     library(scales)
 
