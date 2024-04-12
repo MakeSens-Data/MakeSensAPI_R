@@ -1,5 +1,11 @@
 heatmap <- function(data, variable)
     {
+    library(reshape2)
+    library('devtools')
+    library(lubridate)
+    library("gplots")
+    library(latex2exp)
+    
     names(data)[2] <- 'variable'
     data[['ts']] <- as.POSIXct(data[['ts']], format='%Y-%m-%d  %H:%M:%S')
     dias = seq(as.Date(data[['ts']][1]), as.Date(data[['ts']][length(data[['ts']])]), by = "day")
