@@ -1,13 +1,3 @@
-#' An example for writing a function in R using Roxygen (e.g. a variant of Doxygen for
-#' R) 
-#' Well, this function is for writing stuff, I suppose that I need to write here the
-#' pourpose of the function.
-#' @param data
-#' @keywords 
-#' @export 
-#' @examples
-#' gradient_pm2_5()
-
 gradient <- function(data,variable)
     {
 
@@ -31,10 +21,11 @@ gradient <- function(data,variable)
     }
     options(repr.plot.width=18, repr.plot.height=6)
     ggp <- ggplot(data, aes(x = ts, y = variable_, color = variable_ )) + 
-       geom_line(size = 1)  +
+       geom_line(size = 0.6)  +
           scale_color_gradientn(colours =colors, limits=c(0,250),  values = rescale(breaks), oob = scales::squish ) +
-          theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Fondo del panel en blanco
-          plot.background = element_rect(fill = "white", colour = "white"),axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14)) +
+          theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),legend.title = element_blank(),legend.key.height = unit(1, "in"),    panel.border = element_rect(colour = "black", fill = NA, size = 0.5, linetype = "solid"), 
+          plot.background = element_rect(fill = "white", colour = "white"), panel.background = element_rect(fill = "white", colour = "white"),axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14)) +
           ylab(TeX(paste('$', variable ,"\\,\\mu / m^3$")))   + xlab("Estampa temporal") 
+
     print(ggp)
     }
