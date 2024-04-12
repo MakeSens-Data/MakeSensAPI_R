@@ -1,5 +1,9 @@
 heatmap <- function(data, variable)
     {
+
+    suppressPackageStartupMessages(library(lubridate))
+    suppressPackageStartupMessages(library(gplots))
+
     library(reshape2)
     library('devtools')
     library(lubridate)
