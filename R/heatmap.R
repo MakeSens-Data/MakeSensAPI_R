@@ -57,7 +57,7 @@ heatmap <- function(data, variable)
       scale_fill_gradientn(colours = colors, limits = c(0, 425), values = rescaled_breaks, oob = squish, na.value = "white") +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), panel.background = element_rect(fill = "white", colour = "white"),  # Fondo del panel en blanco
       plot.background = element_rect(fill = "white", colour = "white"),axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14)) + 
-      ylab( TeX(paste('$', variable, "\\,\\mu / m^3$", sep = ""))) + xlab("Estampa temporal") +
+      ylab('Horas') + xlab("Estampa temporal") +
       guides(fill = guide_colorbar(barwidth = 1.0, barheight = 25, title.position = "top", title.hjust = -0.5)) +
       labs(fill = "") 
 
