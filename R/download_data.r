@@ -136,6 +136,9 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
         colnames(datt) <- gsub("pm25_2_ae", "pm25_2_AE", colnames(datt))
         colnames(datt) <- gsub("pm1_1_ae", "pm1_1_AE", colnames(datt))
         colnames(datt) <- gsub("pm1_2_ae", "pm1_2_AE", colnames(datt))
+
+        # Eliminar las filas donde todos son NaN
+        datt <- datt[!apply(is.na(datt), 1, all), ]
         return(datt)
     }
     
