@@ -50,9 +50,15 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
             }
              else
             {
-                fields_list <- unlist(strsplit(fields, ","))
-                fields_list <- convert_measurements(fields_list, mode="upper")
-                fields <- paste(fields_list, collapse=",")
+                if if (substr(id_device, 1, 3) == "UVA") {
+                    fields <- toupper(fields)
+                }                    
+                else{
+                    fields_list <- unlist(strsplit(fields, ","))
+                    fields_list <- convert_measurements(fields_list, mode="upper")
+                    fields <- paste(fields_list, collapse=",")
+                } 
+
                 url = paste('https://api.makesens.co/device/',id_device,'/logs?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }
             }
@@ -64,9 +70,14 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
             }
             else
             {
-                fields_list <- unlist(strsplit(fields, ","))
-                fields_list <- convert_measurements(fields_list, mode="upper")
-                fields <- paste(fields_list, collapse=",")
+                if if (substr(id_device, 1, 3) == "UVA") {
+                    fields <- toupper(fields)
+                }                    
+                else{
+                    fields_list <- unlist(strsplit(fields, ","))
+                    fields_list <- convert_measurements(fields_list, mode="upper")
+                    fields <- paste(fields_list, collapse=",")
+                } 
                 url = paste('https://api.makesens.co/device/',id_device,'/data?min_ts=',start_date,'000&max_ts=',end_date,'000&agg=',sample_rate,'&data_type=',data_type,'&fields=',fields,sep='') 
             }}
             # Hacer la petición
@@ -109,7 +120,15 @@ download_data <- function(id_device, start_date, end_date, sample_rate, logs = F
     
         # Eliminar los repetidos
         datt <- datt %>% distinct(ts, .keep_all = TRUE)
-        colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
+        #parche uva
+        if (substr(id_device, 1, 3) == "UVA") {
+            colnames(datt) <- tolower(colnames(datt))
+        }
+        else{
+            colnames(datt) <- convert_measurements(colnames(datt), mode="lower")
+        }
+
+        
         # Cambio específico de nombres de columnas
         colnames(datt) <- gsub("pm10_1_ae", "pm10_1_AE", colnames(datt))
         colnames(datt) <- gsub("pm10_2_ae", "pm10_2_AE", colnames(datt))
